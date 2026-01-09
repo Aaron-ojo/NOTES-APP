@@ -5,7 +5,7 @@ export const registerUser = async (req, res) => {
   try {
     const { userName, email, password } = req.body;
 
-    if (!name || !email || !password) {
+    if (!userName || !email || !password) {
       return res.status(400).json("please enter your credentials");
     }
 
@@ -29,7 +29,7 @@ export const registerUser = async (req, res) => {
         .json("password must be at least 6 characters long");
     }
 
-    const user = User.create({ userName, email, password });
+    const user = await User.create({ userName, email, password });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
@@ -46,6 +46,38 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-    req.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json("please provide email and password");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json("invalid email or password");
+    }
+
+    const isMatch = await user.comparePasswords(password);
+
+    if (!isMatch) {
+      return res.status(400).json("ïnvalid email or password");
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.status(200).json({
+      message: "login successful",
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

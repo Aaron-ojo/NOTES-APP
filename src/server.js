@@ -4,7 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import mongoose from "mongoose";
 import morgan from "morgan";
-// import { registerUser } from "./controllers/auth.controller";
+import { registerUser, loginUser } from "./controllers/auth.controller.js";
 
 dotenv.config();
 
@@ -12,14 +12,15 @@ const app = express();
 
 app.use(helmet());
 app.use(cors());
-app.use(morgan());
+app.use(morgan("dev"));
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Notes API is running");
 });
 
-// app.post("/api/auth/register", registerUser);
+app.post("/api/auth/register", registerUser);
+app.post("/api/auth/login", loginUser);
 
 mongoose
   .connect(process.env.MONGODB_URI)
