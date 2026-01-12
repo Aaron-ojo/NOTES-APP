@@ -1,12 +1,33 @@
 import User from "../models/User.model.js";
 import jwt from "jsonwebtoken";
 
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const registerUser = async (req, res) => {
   try {
     const { userName, email, password } = req.body;
 
     if (!userName || !email || !password) {
       return res.status(400).json("please enter your credentials");
+    }
+
+    if (!userName) {
+      console.log("username is missing");
+    }
+
+    if (!email) {
+      console.log("email is missing");
+    }
+
+    if (!password) {
+      console.log("password is missing");
     }
 
     const existingUser = await User.findOne({ $or: [{ email }, { userName }] });
@@ -76,6 +97,7 @@ export const loginUser = async (req, res) => {
 
     res.status(200).json({
       message: "login successful",
+      token,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

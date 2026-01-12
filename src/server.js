@@ -4,7 +4,12 @@ import cors from "cors";
 import helmet from "helmet";
 import mongoose from "mongoose";
 import morgan from "morgan";
-import { registerUser, loginUser } from "./controllers/auth.controller.js";
+import notesRoutes from "./routes/notes.routes.js";
+import {
+  registerUser,
+  loginUser,
+  getUsers,
+} from "./controllers/auth.controller.js";
 
 dotenv.config();
 
@@ -14,10 +19,13 @@ app.use(helmet());
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
+app.use("/api/notes", notesRoutes);
 
 app.get("/", (req, res) => {
   res.send("Notes API is running");
 });
+
+app.get("/api/auth/getUsers", getUsers);
 
 app.post("/api/auth/register", registerUser);
 app.post("/api/auth/login", loginUser);
