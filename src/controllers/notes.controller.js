@@ -38,7 +38,7 @@ export const createNote = async (req, res) => {
 export const getNote = async (req, res) => {
   try {
     const { id } = req.params;
-    const note = await Note.findById({ _id: id, user: req.user.id });
+    const note = await Note.findOne({ _id: id, user: req.user.id });
 
     if (!note) {
       return res.status(404).json({ message: "note not found" });
@@ -55,7 +55,7 @@ export const updateNote = async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
 
-    const note = await Note.findOne({ id: _id, user: req.user.id });
+    const note = await Note.findOne({ _id: id, user: req.user.id });
 
     if (!note) {
       return res.status(404).json({ message: "note not found" });
@@ -96,10 +96,10 @@ export const updateNote = async (req, res) => {
   }
 };
 
-export const deletNote = async (req, res) => {
+export const deleteNote = async (req, res) => {
   try {
     const { id } = req.params;
-    const note = await Note.findByIdAndDelete(id);
+    const note = await Note.findOneAndDelete({ _id: id, user: req.user.id });
 
     if (!note) {
       return res.status(404).json({ message: "note not found" });

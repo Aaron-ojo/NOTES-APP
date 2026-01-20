@@ -19,7 +19,7 @@ const protect = async (req, res, next) => {
   }
 
   try {
-    const decoded = Jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = await User.findById(decoded.id).select("-password");
 
@@ -28,8 +28,8 @@ const protect = async (req, res, next) => {
         success: false,
         message: "User belonging to this token does not exist ",
       });
-      next();
     }
+    next();
   } catch (error) {
     res.status(401).json({
       success: false,

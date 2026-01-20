@@ -10,6 +10,11 @@ import {
   loginUser,
   getUsers,
 } from "./controllers/auth.controller.js";
+import {
+  registerRules,
+  loginRules,
+  validateRequest,
+} from "./validators/auth.validator.js";
 
 dotenv.config();
 
@@ -27,8 +32,8 @@ app.get("/", (req, res) => {
 
 app.get("/api/auth/getUsers", getUsers);
 
-app.post("/api/auth/register", registerUser);
-app.post("/api/auth/login", loginUser);
+app.post("/api/auth/register", registerRules, validateRequest, registerUser);
+app.post("/api/auth/login", loginRules, validateRequest, loginUser);
 
 mongoose
   .connect(process.env.MONGODB_URI)
